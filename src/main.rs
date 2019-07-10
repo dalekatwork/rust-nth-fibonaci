@@ -1,37 +1,35 @@
-use std::io;
+use failure::Fallible;
 
 fn main() {
-    println!("Fibonaci series");
-    loop{
-        let mut n = String::new();
-        println!("Enter postion for Fibo series");
-        io::stdin().read_line(&mut n)
-        .expect("Failed to read line");
-        let n: u32 = match n.trim().parse() {
-                Ok(num) => num,
-                Err(_) => continue,
-            };
-        fibo(n);
-    }    
+    println!("Fibonacci series");
+    loop {
+        println!("Enter position for Fibo series");
+        match read_number() {
+            Ok(n) => println!("the {}th fibo number is {}", n, fibo(n)),
+            Err(e) => println!("error: {}", e),
+        }
+    }
 }
 
-fn fibo(n: u32){
-    let mut a = 0;
-    let mut b = 1;
-    let mut c = a+b;
+fn read_number() -> Fallible<u32> {
+    let mut line = String::new();
+    std::io::stdin().read_line(&mut line)?;
+    let n = line.trim().parse::<u32>()?;
+    Ok(n)
+}
 
-    let result = if n == 1 {
-        a
-    } else if n == 2{
-        b
+fn fibo(n: u32) -> u32 {
+    if n <= 1 {
+        0
     } else {
-        for _ in 1..n-1 {
-            c= a+b;
+        let mut a = 0;
+        let mut b = 1;
+        let mut c = 1;
+        for _ in 1..n - 1 {
+            c = a + b;
             a = b;
             b = c;
         }
         c
-    };
-
-    println!("the {}th fibo number is {}", n, result);
+    }
 }
